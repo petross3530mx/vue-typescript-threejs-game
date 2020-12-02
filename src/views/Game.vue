@@ -1,12 +1,14 @@
 <template>
   <div @keyup="keyUp" class="about">
     <canvas width="640" height="480" id="c" style="width: 100%;"></canvas>
-    <Controls @capture="captureInfo()" />
+    <Controls :debug="debug" :displaydata="im" @capture="captureInfo()" @update="updatePictureFromControls"  />
   </div>
 </template>
 <script>
 import Controls from "@/components/Controls.vue";
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 export default {
@@ -50,10 +52,27 @@ export default {
     captureInfo() {
       console.log(this.camera.position);
       console.log(this.camera.rotation);
-      this.im.camera.x = this.camera.position.x;
+      this.im.camera.position.x = this.camera.position.x;
+      this.im.camera.position.y = this.camera.position.y;
+      this.im.camera.position.z = this.camera.position.z;
+
+      this.im.camera.rotation.x = this.camera.rotation.x;
+      this.im.camera.rotation.y = this.camera.rotation.y;
+      this.im.camera.rotation.z = this.camera.rotation.z;
+
     },
     makeSureFormCorrect() {
       this.captureInfo();
+    },
+    updatePictureFromControls(data){
+
+      this.camera.position.x = data.camera.position.x;
+      this.camera.position.y = data.camera.position.y;
+      this.camera.position.z = data.camera.position.z;
+
+      this.camera.rotation.x = data.camera.rotation.x;
+      this.camera.rotation.y = data.camera.rotation.y;
+      this.camera.rotation.z = data.camera.rotation.z;
     },
     setXVal(e) {
       const val = e.target.value;
@@ -84,9 +103,9 @@ export default {
       );
       this.camera.position.set(0, 1000, 20);
 
-      //this.controls = new OrbitControls(this.camera, this.canvas);
-      //this.controls.target.set(0, 5, 0);
-      // this.controls.update();
+      this.controls = new OrbitControls(this.camera, this.canvas);
+      this.controls.target.set(0, 5, 0);
+       this.controls.update();
 
       this.scene = new THREE.Scene();
       this.scene.background = new THREE.Color("black");
@@ -124,7 +143,7 @@ export default {
           groundColor,
           intensity
         );
-        this.scene.add(light);
+       // this.scene.add(light);
       }
       //add lights
       {
@@ -135,7 +154,7 @@ export default {
         this.scene.add(light);
         this.scene.add(light.target);
         const light0 = new THREE.AmbientLight(0xffffff, 1);
-        this.scene.add(light0);
+        //this.scene.add(light0);
         const light2 = new THREE.PointLight(0xc4c4c4, 10);
         light2.position.set(500, 100, 0);
         this.scene.add(light2);
@@ -168,9 +187,9 @@ export default {
           this.frameArea(boxSize * 0.5, boxSize, boxCenter, this.camera);
 
           // update the Trackball controls to handle the new size
-          ///controls.maxDistance = boxSize * 10;
-          ///controls.target.copy(boxCenter);
-          ///controls.update();
+          this.controls.maxDistance = boxSize * 10;
+          this.controls.target.copy(boxCenter);
+          this.controls.update();
         });
       }
     },
@@ -302,14 +321,8 @@ export default {
   mounted() {
     this.mainMethod();
     this.loop();
-    this.camera.position.set(0, 100000, 20);
+    this.camera.position.set(0, 1000, 20);
     this.handleKeysMethods();
   }
 };
 </script>
-<style>
-label span,
-div span {
-  color: #fff;
-}
-</style>
