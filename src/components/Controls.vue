@@ -132,4 +132,15 @@ div span {
   display: block;
   grid-template-columns: 1fr 1fr 1fr;
 }
+h2{
+  color: #fff;
+  font-size: 12px;
+  margin-bottom: 0;
+}
+.grid-camera-car p{
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  margin-top: 0;
+}
 </style>
