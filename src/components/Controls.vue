@@ -37,19 +37,19 @@
               @change="updatePictureWithNew"
               type="number"
               v-model="displaydata.camera.rotation.x"
-              step="0.1"
+              step="1"
             />
             <input
               @change="updatePictureWithNew"
               type="number"
               v-model="displaydata.camera.rotation.y"
-              step="0.1"
+              step="1"
             />
             <input
               @change="updatePictureWithNew"
               type="number"
               v-model="displaydata.camera.rotation.z"
-              step="0.1"
+              step="1"
             />
           </div>
         </div>
@@ -72,7 +72,7 @@
             <input
               @change="updatePictureWithNew"
               type="number"
-              step="0.1"
+              step="1"
               v-model="displaydata.car.position.z"
             />
           </div>
@@ -82,18 +82,18 @@
               @change="updatePictureWithNew"
               type="number"
               v-model="displaydata.car.rotation.x"
-              step="0.1"
+              step="1"
             />
             <input
               @change="updatePictureWithNew"
               type="number"
               v-model="displaydata.car.rotation.y"
-              step="0.1"
+              step="1"
             />
             <input
               @change="updatePictureWithNew"
               type="number"
-              step="0.1"
+              step="1"
               v-model="displaydata.car.rotation.z"
             />
           </div>

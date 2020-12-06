@@ -1,6 +1,9 @@
 <template>
   <div @keyup="keyUp" class="about">
     <canvas width="640" height="480" id="c" style="width: 100%"></canvas>
+    <button @click="turnLeft">Left</button>
+    <button @click="carIddle">carIddle</button
+    ><button @click="turnRight">Right</button>
     <Controls
       :debug="debug"
       :displaydata="im"
@@ -13,6 +16,7 @@
 import Controls from "@/components/Controls.vue";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { gsap } from "gsap";
 
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
@@ -66,6 +70,44 @@ export default {
     };
   },
   methods: {
+    carIddle() {
+      gsap.to(this.root.rotation, {
+        y: 0,
+        z: 0,
+        duration: 1,
+      });
+      gsap.to(this.root.position, {
+        y: 0,
+        z: 1,
+        duration: 1,
+      });
+    },
+    turnRight() {
+      // gsap.to(this.root.rotation, 1, {
+      //   y: -3,
+      //   ease: "back.out(2)",
+      // });
+      console.log(this.root.rotation.y);
+      gsap.to(this.root.rotation, {
+        y: -0.25,
+        z: -0.1,
+        duration: 1,
+      });
+      gsap.to(this.root.position, {
+        y: 0,
+        z: 0,
+        duration: 1,
+      });
+    },
+    turnLeft() {
+      console.log(this.root.rotation.y);
+      gsap.to(this.root.rotation, { y: 0.25, z: 0.1, duration: 1 });
+      gsap.to(this.root.position, {
+        y: 0,
+        z: 0,
+        duration: 1,
+      });
+    },
     captureInfo() {
       console.log(this.camera.position);
       console.log(this.camera.rotation);
@@ -73,17 +115,17 @@ export default {
       this.im.camera.position.y = this.camera.position.y;
       this.im.camera.position.z = this.camera.position.z;
 
-      this.im.camera.rotation.x = this.camera.rotation.x * 10;
-      this.im.camera.rotation.y = this.camera.rotation.y * 10;
-      this.im.camera.rotation.z = this.camera.rotation.z * 10;
+      this.im.camera.rotation.x = this.camera.rotation.x;
+      this.im.camera.rotation.y = this.camera.rotation.y;
+      this.im.camera.rotation.z = this.camera.rotation.z;
 
       this.im.car.position.x = this.root.position.x;
       this.im.car.position.y = this.root.position.y;
       this.im.car.position.z = this.root.position.z;
 
-      this.im.car.rotation.x = this.root.rotation.x * 10;
-      this.im.car.rotation.y = this.root.rotation.y * 10;
-      this.im.car.rotation.z = this.root.rotation.z * 10;
+      this.im.car.rotation.x = this.root.rotation.x;
+      this.im.car.rotation.y = this.root.rotation.y;
+      this.im.car.rotation.z = this.root.rotation.z;
     },
     makeSureFormCorrect() {
       this.captureInfo();
@@ -99,10 +141,18 @@ export default {
 
       this.root.position.x = data.car.position.x;
       this.root.position.y = data.car.position.y;
-      this.root.position.z = data.car.position.z;
+      // this.root.position.z = data.car.position.z;
+      gsap.to(this.root.position, 0.3, {
+        z: data.car.position.z,
+        ease: "back.out(2)",
+      });
 
+      gsap.to(this.root.rotation, 0.3, {
+        y: data.car.rotation.y * 0.1,
+        ease: "back.out(2)",
+      });
       this.root.rotation.x = data.car.rotation.x * 0.1;
-      this.root.rotation.y = data.car.rotation.y * 0.1;
+      //this.root.rotation.y = data.car.rotation.y * 0.1;
       this.root.rotation.z = data.car.rotation.z * 0.1;
     },
     keyUp() {
@@ -122,8 +172,8 @@ export default {
       );
       this.camera.position.set(0, 1000, 20);
 
-      this.controls = new OrbitControls(this.camera, this.canvas);
-      this.controls.target.set(0, 5, 0);
+      //this.controls = new OrbitControls(this.camera, this.canvas);
+      //this.controls.target.set(0, 5, 0);
       //this.controls.update();
 
       this.scene = new THREE.Scene();
@@ -302,33 +352,24 @@ export default {
 
           if (keyName === keys[0]) {
             console.log("up");
-            this.camera.rotation.x -= 0.001;
-            this.camera.position.y -= 1;
-
+            this.carIddle();
             return;
           }
 
           if (keyName === keys[1]) {
             console.log("up");
-            this.camera.rotation.x += 0.001;
-            this.camera.position.y += 1;
-
+            this.carIddle();
             return;
           }
 
           if (keyName === keys[2]) {
             console.log("right");
-            //camera.rotation.y -= 0.01;
-            this.camera.rotation.y -= 0.001;
-            this.camera.position.x += 1;
-
+            this.turnRight();
             return;
           }
           if (keyName === keys[3]) {
             console.log("left");
-            //camera.rotation.y += 0.01;
-            this.camera.rotation.y += 0.001;
-            this.camera.position.x -= 1;
+            this.turnLeft();
 
             return;
           }
@@ -340,7 +381,22 @@ export default {
   mounted() {
     this.mainMethod();
     this.loop();
-    this.camera.position.set(0, 1000, 20);
+    this.camera.position.set(0, 2.2, -5);
+    this.camera.rotation.set(-1, 31, 0);
+    gsap.fromTo(
+      this.camera.position,
+      {
+        y: 0,
+        z: -5,
+        x: 0,
+      },
+      {
+        y: 2.8,
+        z: -10,
+        x: 0,
+        duration: 2,
+      }
+    );
     this.handleKeysMethods();
   },
 };
