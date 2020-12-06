@@ -1,10 +1,13 @@
 <template>
   <div>
-    <button @click="captureInfo">Capture</button>
-    <div for="">
-      <input type="checkbox" name="" v-model="debug" id="" />
-      <span>debug</span>
+    <div class="top-controls">
+      <button @click="captureInfo">Capture</button>
+      <div for="">
+        <input type="checkbox" name="" v-model="debug" id="" />
+        <span>debug</span>
+      </div>
     </div>
+
     <div class="grid-camera-car">
       <div>
         <h2>Camera</h2>
@@ -34,16 +37,19 @@
               @change="updatePictureWithNew"
               type="number"
               v-model="displaydata.camera.rotation.x"
+              step="0.1"
             />
             <input
               @change="updatePictureWithNew"
               type="number"
               v-model="displaydata.camera.rotation.y"
+              step="0.1"
             />
             <input
               @change="updatePictureWithNew"
               type="number"
               v-model="displaydata.camera.rotation.z"
+              step="0.1"
             />
           </div>
         </div>
@@ -56,17 +62,18 @@
             <input
               @change="updatePictureWithNew"
               type="number"
-              v-model="displaydata.camera.position.x"
+              v-model="displaydata.car.position.x"
             />
             <input
               @change="updatePictureWithNew"
               type="number"
-              v-model="displaydata.camera.position.y"
+              v-model="displaydata.car.position.y"
             />
             <input
               @change="updatePictureWithNew"
               type="number"
-              v-model="displaydata.camera.position.z"
+              step="0.1"
+              v-model="displaydata.car.position.z"
             />
           </div>
           <p>rotation: (x, y, z)</p>
@@ -74,23 +81,25 @@
             <input
               @change="updatePictureWithNew"
               type="number"
-              v-model="displaydata.camera.rotation.x"
+              v-model="displaydata.car.rotation.x"
+              step="0.1"
             />
             <input
               @change="updatePictureWithNew"
               type="number"
-              v-model="displaydata.camera.rotation.y"
+              v-model="displaydata.car.rotation.y"
+              step="0.1"
             />
             <input
               @change="updatePictureWithNew"
               type="number"
-              v-model="displaydata.camera.rotation.z"
+              step="0.1"
+              v-model="displaydata.car.rotation.z"
             />
           </div>
         </div>
       </div>
     </div>
- 
   </div>
 </template>
 <script lang="ts">
@@ -98,15 +107,15 @@ import Vue from "vue";
 export default Vue.extend({
   props: {
     displaydata: {
-      required: true
+      required: true,
     },
     debug: {
-      required: true
-    }
+      required: true,
+    },
   },
   data: () => {
     return {
-      im: null
+      im: null,
     };
   },
   methods: {
@@ -115,8 +124,8 @@ export default Vue.extend({
     },
     captureInfo() {
       this.$emit("capture");
-    }
-  }
+    },
+  },
 });
 </script>
 <style>
@@ -127,20 +136,30 @@ div span {
 .grid-camera-car {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  width: 100%;
+  overflow: hidden;
 }
 .grid-camera-car div.inputs {
   display: block;
   grid-template-columns: 1fr 1fr 1fr;
 }
-h2{
+h2 {
   color: #fff;
   font-size: 12px;
   margin-bottom: 0;
 }
-.grid-camera-car p{
+.grid-camera-car p {
   color: #fff;
   font-size: 12px;
   font-weight: bold;
   margin-top: 0;
+}
+.grid-camera-car input {
+  max-width: 100px;
+}
+.top-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
 }
 </style>

@@ -1,7 +1,12 @@
 <template>
   <div @keyup="keyUp" class="about">
-    <canvas width="640" height="480" id="c" style="width: 100%;"></canvas>
-    <Controls :debug="debug" :displaydata="im" @capture="captureInfo()" @update="updatePictureFromControls"  />
+    <canvas width="640" height="480" id="c" style="width: 100%"></canvas>
+    <Controls
+      :debug="debug"
+      :displaydata="im"
+      @capture="captureInfo()"
+      @update="updatePictureFromControls"
+    />
   </div>
 </template>
 <script>
@@ -13,31 +18,43 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 export default {
   components: {
-    Controls
+    Controls,
   },
   static() {
     return {
       scene: new THREE.Scene(),
       camera: null,
       renderer: THREE.WebGLRenderer,
-      factor: 0
+      factor: 0,
     };
   },
-  data: function() {
+  data: function () {
     return {
       im: {
         camera: {
           position: {
             x: 0,
             y: 0,
-            z: 0
+            z: 0,
           },
           rotation: {
             x: 0,
             y: 0,
-            z: 0
-          }
-        }
+            z: 0,
+          },
+        },
+        car: {
+          position: {
+            x: 0,
+            y: 0,
+            z: 0,
+          },
+          rotation: {
+            x: 0,
+            y: 0,
+            z: 0,
+          },
+        },
       },
       debug: false,
       canvas: null,
@@ -45,7 +62,7 @@ export default {
       fov: 45,
       aspect: 2,
       near: 0.1,
-      far: 100
+      far: 100,
     };
   },
   methods: {
@@ -56,35 +73,37 @@ export default {
       this.im.camera.position.y = this.camera.position.y;
       this.im.camera.position.z = this.camera.position.z;
 
-      this.im.camera.rotation.x = this.camera.rotation.x;
-      this.im.camera.rotation.y = this.camera.rotation.y;
-      this.im.camera.rotation.z = this.camera.rotation.z;
+      this.im.camera.rotation.x = this.camera.rotation.x * 10;
+      this.im.camera.rotation.y = this.camera.rotation.y * 10;
+      this.im.camera.rotation.z = this.camera.rotation.z * 10;
 
+      this.im.car.position.x = this.root.position.x;
+      this.im.car.position.y = this.root.position.y;
+      this.im.car.position.z = this.root.position.z;
+
+      this.im.car.rotation.x = this.root.rotation.x * 10;
+      this.im.car.rotation.y = this.root.rotation.y * 10;
+      this.im.car.rotation.z = this.root.rotation.z * 10;
     },
     makeSureFormCorrect() {
       this.captureInfo();
     },
-    updatePictureFromControls(data){
-
+    updatePictureFromControls(data) {
       this.camera.position.x = data.camera.position.x;
       this.camera.position.y = data.camera.position.y;
       this.camera.position.z = data.camera.position.z;
 
-      this.camera.rotation.x = data.camera.rotation.x;
-      this.camera.rotation.y = data.camera.rotation.y;
-      this.camera.rotation.z = data.camera.rotation.z;
-    },
-    setXVal(e) {
-      const val = e.target.value;
-      this.camera.position.x = val;
-    },
-    setYVal(e) {
-      const val = e.target.value;
-      this.camera.position.y = val;
-    },
-    setZVal(e) {
-      const val = e.target.value;
-      this.camera.position.z = val;
+      this.camera.rotation.x = data.camera.rotation.x * 0.1;
+      this.camera.rotation.y = data.camera.rotation.y * 0.1;
+      this.camera.rotation.z = data.camera.rotation.z * 0.1;
+
+      this.root.position.x = data.car.position.x;
+      this.root.position.y = data.car.position.y;
+      this.root.position.z = data.car.position.z;
+
+      this.root.rotation.x = data.car.rotation.x * 0.1;
+      this.root.rotation.y = data.car.rotation.y * 0.1;
+      this.root.rotation.z = data.car.rotation.z * 0.1;
     },
     keyUp() {
       console.log("arguments");
@@ -93,7 +112,7 @@ export default {
       this.canvas = document.querySelector("#c");
       this.renderer = new THREE.WebGLRenderer({
         canvas: this.canvas,
-        antialias: true
+        antialias: true,
       });
       this.camera = new THREE.PerspectiveCamera(
         this.fov,
@@ -105,7 +124,7 @@ export default {
 
       this.controls = new OrbitControls(this.camera, this.canvas);
       this.controls.target.set(0, 5, 0);
-       this.controls.update();
+      //this.controls.update();
 
       this.scene = new THREE.Scene();
       this.scene.background = new THREE.Color("black");
@@ -127,7 +146,7 @@ export default {
         const planeGeo = new THREE.PlaneBufferGeometry(planeSize, planeSize);
         const planeMat = new THREE.MeshPhongMaterial({
           map: texture,
-          side: THREE.DoubleSide
+          side: THREE.DoubleSide,
         });
         const mesh = new THREE.Mesh(planeGeo, planeMat);
         mesh.rotation.x = Math.PI * -0.5;
@@ -143,7 +162,7 @@ export default {
           groundColor,
           intensity
         );
-       // this.scene.add(light);
+        // this.scene.add(light);
       }
       //add lights
       {
@@ -169,16 +188,16 @@ export default {
       {
         const gltfLoader = new GLTFLoader();
         console.log("glts");
-        gltfLoader.load("cars/mazda_miata_mx-5_na/scene.gltf", gltf => {
-          const root = gltf.scene;
-          console.log(root);
-          this.scene.add(root);
-          console.log(this.dumpObject(root).join("\n"));
+        gltfLoader.load("cars/mazda_rx-7_fc/scene.gltf", (gltf) => {
+          this.root = gltf.scene;
+          console.log(this.root);
+          this.scene.add(this.root);
+          console.log(this.dumpObject(this.root).join("\n"));
           //cars = root.getObjectByName('RootNode');
 
           // compute the box that contains all the stuff
           // from root and below
-          const box = new THREE.Box3().setFromObject(root);
+          const box = new THREE.Box3().setFromObject(this.root);
 
           const boxSize = box.getSize(new THREE.Vector3()).length();
           const boxCenter = box.getCenter(new THREE.Vector3());
@@ -276,7 +295,7 @@ export default {
 
       document.addEventListener(
         "keydown",
-        event => {
+        (event) => {
           const keyName = event.key;
 
           //console.log(keyName)
@@ -316,13 +335,13 @@ export default {
         },
         false
       );
-    }
+    },
   },
   mounted() {
     this.mainMethod();
     this.loop();
     this.camera.position.set(0, 1000, 20);
     this.handleKeysMethods();
-  }
+  },
 };
 </script>
